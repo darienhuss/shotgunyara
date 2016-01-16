@@ -19,7 +19,7 @@ def main():
 		for c in string:
 			tmp += '%s\x00' % c
 		string = tmp.rstrip('\x00')
-		
+
 	rule = 'rule xor_string {\n\tstrings:\n'
 	if pe:
 		rule += "\t\t$MZ = 'MZ'\n"
@@ -29,9 +29,9 @@ def main():
 			rule += '%02X ' % (ord(c)^i)
 		rule += '}\n'
 	if pe:
-		rule +='condition:\n\t\t$MZ at 0 and any of them\n}'
+		rule +='\tcondition:\n\t\t$MZ at 0 and any of them\n}'
 	else:
-		rule += 'condition:\n\t\tany of them\n}'
+		rule += '\tcondition:\n\t\tany of them\n}'
 
 	with open(filename, 'wb') as f:
 		f.write(rule)
