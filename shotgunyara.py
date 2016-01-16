@@ -22,7 +22,7 @@ def main():
 
 	rule = 'rule xor_string {\n\tstrings:\n'
 	if pe:
-		rule += "\t\t$MZ = 'MZ'\n"
+		rule += '\t\t$MZ = "MZ"\n'
 	for i in range(1,256):
 		rule += '\t\t$s%i = { ' % i
 		for c in string:
