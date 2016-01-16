@@ -1,5 +1,4 @@
 import argparse
-from hexdump import hexdump
 
 def main():
 	parser = argparse.ArgumentParser(description='Given a string, create 255 xor encoded versions of that string')
