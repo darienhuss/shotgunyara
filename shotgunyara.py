@@ -13,9 +13,10 @@ def longest(a, b):
 	m = match.find_longest_match(0, len(a), 0, len(b))
 	return a[m.a:m.a+m.size]
 
-def generate_b64(rule,in_string,counter):
+def generate_b64(rule,in_string,counter,no_original_string):
 	alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-	rule += '\t\t//original string: %s\n' % in_string
+	if not no_original_string:
+		rule += '\t\t//original string: %s\n' % in_string
 	for t in [3, 4, 5]:
 		init_string1 = encode(os.urandom(t) + in_string + os.urandom(6),alphabet) #initialize first string
 		for i in range(100):
@@ -96,10 +97,15 @@ def main():
 	if pe:
 		rule += '\t\t$stub = "This program cannot be run in DOS mode"\n\n'
 
+	#if we include the original string don't need a comment for b64 option
+	if include:
+		no_original_string = True
+	else:
+		no_original_string = False
+
 	#if xor option is set, do xor
 	if xor:
 		rule = generate_xor(rule,in_string)
-
 	elif b64:
 		#if there is just one string
 		counter = 1
@@ -107,10 +113,13 @@ def main():
 			if include:
 				rule += '\t\t$s%i = "%s" ascii wide //original string\n\n' % (counter,in_string)
 				counter+=1
-			rule, counter = generate_b64(rule,in_string,counter)
+			rule, counter = generate_b64(rule,in_string,counter,no_original_string)
 		elif in_string_list:
 			for in_string in in_string_list:
-				rule, counter = generate_b64(rule,in_string,counter)
+				if include:
+					rule += '\t\t$s%i = "%s" ascii wide //original string\n' % (counter,in_string)
+					counter+=1
+				rule, counter = generate_b64(rule,in_string,counter,no_original_string)
 				rule+='\n'
 			#strip the trailing newline
 			rule = rule[:-1]
