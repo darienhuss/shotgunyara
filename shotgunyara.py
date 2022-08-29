@@ -5,7 +5,7 @@ import difflib
 import argparse
 
 
-def encode(string_to_encode,alphabet):
+def b64encode(string_to_encode,alphabet):
 	return base64.b64encode(string_to_encode)
 
 def longest(a, b):
@@ -18,9 +18,9 @@ def generate_b64(rule,in_string,counter,no_original_string):
 	if not no_original_string:
 		rule += '\t\t//original string: %s\n' % in_string
 	for t in [3, 4, 5]:
-		init_string1 = encode(os.urandom(t) + in_string + os.urandom(6),alphabet) #initialize first string
+		init_string1 = b64encode(os.urandom(t) + in_string.encode() + os.urandom(6),alphabet).decode() #initialize first string
 		for i in range(100):
-			init_string2 = encode(os.urandom(t) + in_string + os.urandom(6),alphabet)
+			init_string2 = b64encode(os.urandom(t) + in_string.encode() + os.urandom(6),alphabet).decode()
 			init_string1 = longest(init_string1, init_string2)
 		rule += '\t\t$s%i = "%s" ascii wide\n' % (counter,init_string1)
 		counter+=1
